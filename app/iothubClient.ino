@@ -159,3 +159,9 @@ void twinCallback(
     parseTwinMessage(temp);
     free(temp);
 }
+
+static void reportedStateCallback(int status_code, void* userContextCallback)
+{
+  (void)userContextCallback;
+  printf("Device Twin reported properties update completed with result: %d\r\n", status_code);
+}

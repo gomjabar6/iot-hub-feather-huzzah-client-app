@@ -85,12 +85,26 @@ void parseTwinMessage(char *message)
         return;
     }
 
+    //Create object for Device Twin response
+    JsonObject& response = jsonBuffer.createObject();
+
     if (root["desired"]["interval"].success())
     {
         interval = root["desired"]["interval"];
+        response["interval"] = interval;
     }
     else if (root.containsKey("interval"))
     {
         interval = root["interval"];
+        response["interval"] = interval;
     }
+
+    // return device state
+    String returnMessage;
+    response.printTo(returnMessage);
+  
+    const char* reportedState = returnMessage.c_str();
+    size_t reportedStateSize = strlen(reportedState);
+    
+    IoTHubClient_LL_SendReportedState(iotHubClientHandle, (const unsigned char*)reportedState, reportedStateSize, reportedStateCallback, iotHubClientHandle);
 }
